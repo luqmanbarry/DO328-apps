@@ -1,6 +1,9 @@
 package com.redhat.restclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.SimplyTimed;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.inject.Inject;
@@ -35,13 +38,17 @@ public class ExchangeResource {
 
     @POST
     @Path("/historicalData")
+    @SimplyTimed(name = "exchange_svc:history_fetch_time", 
+           description = "Total time it takes for the method to fetch requested data")
+    @Metered(name = "exchange_svc:history_fetch_rate", 
+             description = "Rate at which history data is fetched")       
     public List<Currency> getHistoricalData(String body) {
-        try {
-            Thread.sleep(5000);
-        }
-        catch(InterruptedException ie) {
-            ie.printStackTrace();
-        }
+        // try {
+        //     Thread.sleep(50);
+        // }
+        // catch(InterruptedException ie) {
+        //     ie.printStackTrace();
+        // }
         
         return historyService.getCurrencyExchangeRates(body);
     }
